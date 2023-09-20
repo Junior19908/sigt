@@ -1,0 +1,613 @@
+<?php
+ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+set_time_limit(300);
+
+define('ROOT_PATH', dirname(__FILE__));
+//Verifica se o usuário esta logado
+require_once '../../../../../include/verifica_user.php';
+require('../../../../../controller/fpdf/fpdf.php');
+require_once '../../../../../class/Conexao.class.php';
+//chmod ('ligacoes/index.php', 755);
+//include_once('ligacoes/index.php');
+session_start();
+include_once('../../../../../controller/user.php');
+include_once('ligacoes/index.php');
+define('FPDF_FONTPATH','font/');
+$datainicio = $_POST['calendarioINICIO'];
+$datafim = $_POST['calendarioFIM'];
+class PDF extends FPDF
+{
+  function Header(){
+      $this->Image('../../../../../css/logo/usga.png',120,12,17);//Logo Mover para esquerda ou direita, Cima e Baixo & Tamanho.
+      $this->Image('../../../../../css/logo/Logomarca_Bonsucro_2016.png',137,12,19);//Logo Mover para esquerda ou direita, Cima e Baixo & Tamanho.
+      $this->Image('../../../../../css/logo/DNV-GL-Certification-logo.png',157,11,15);//Logo Mover para esquerda ou direita, Cima e Baixo & Tamanho.
+      $this->Image('../../../../../css/logo/bulb-s.png',173,11,20);//Logo Mover para esquerda ou direita, Cima e Baixo & Tamanho.
+      $this->SetFont('Arial','B',15);//Definir Fonte e Tamanho
+      $this->Cell(-1);//Mover para esquerda ou Direita
+      $this->Cell(30,10,'USINA SERRA GRANDE S/A',0,1,'L');
+      $this->Ln(-4);//Quebra de Página
+  //***********************************************************//
+      $this->SetFont('Arial','I',10);
+      $this->Cell(-1);
+      $this->Cell(30,10, utf8_decode('AÇÚCAR, ÁLCOOL & ENERGIA'),0,0,'L');
+      $this->Ln(6);
+  //***********************************************************//
+      $this->SetFont('Arial','I',10);
+      $this->Cell(-1);
+      $this->Cell(30,10, utf8_decode('DEMONSTRATIVO DE COMBUSTÍVEL FORNECIDO À FUNCIONÁRIOS'),0,0,'L');
+      $this->Ln(12);
+  //***********************************************************//
+  }
+  function Footer()
+    {
+        // Go to 1.5 cm from bottom
+        $this->SetY(-15);
+        // Select Arial italic 8
+        $this->SetFont('Arial','I',8);
+        // Print centered page number
+        $this->Cell(0,10,utf8_decode('Página ').$this->PageNo(),0,0,'C');
+    }
+}
+
+//add page
+$pdf = new PDF('P','mm','A4');
+$pdf->AddPage();
+$pdf->SetFont('Arial','',10);
+$pdf->Ln();
+//Cabeçalho
+$pdf->SetFont('Arial','',8);
+$pdf->Cell(18,-20,utf8_decode('PROGRAMA:'),0,0,'P');
+$pdf->Cell(5,-20,utf8_decode('SistemaGSG - PHP/HTML'));
+$pdf->Ln();
+$pdf->SetFont('Arial','',8);
+$pdf->Cell(18,26,utf8_decode('USUÁRIO:'),0,0,'P');
+$pdf->Cell(5,26,utf8_decode($nome),0,0,'L');
+$pdf->Ln();
+$pdf->SetFont('Arial','',8);
+$pdf->Cell(18,-20,utf8_decode('DATA:'),0,0,'P');
+$pdf->Cell(5,-20,date("d/m/Y"));
+$pdf->Ln();
+$pdf->SetFont('Arial','',8);
+$pdf->Cell(18,26,utf8_decode('PERÍODO:'),0,0,'P');
+$pdf->Cell(5,26,date("d/m/Y",strtotime($datainicio)));
+$pdf->SetX(46);
+$pdf->Cell(18,26,utf8_decode('Até'),0,0,'P');
+$pdf->SetX(54);
+$pdf->Cell(5,26,date("d/m/Y",strtotime($datafim)));
+$pdf->Ln();
+$pdf->Sety(46);
+$pdf->SetFont('Arial','',8);
+$pdf->Cell(18,0,utf8_decode('SAFRA:'),0,0,'P');
+if($SAFRA=='1'){
+    $pdf->Cell(5,0,utf8_decode('2016/2017'));
+}elseif($SAFRA=='2'){
+    $pdf->Cell(5,0,utf8_decode('2017/2018'));
+}elseif($SAFRA=='3'){
+    $pdf->Cell(5,0,utf8_decode('2018/2019'));
+}elseif($SAFRA=='4'){
+    $pdf->Cell(5,0,utf8_decode('2019/2020'));
+}elseif($SAFRA=='5'){
+    $pdf->Cell(5,0,utf8_decode('2020/2021'));
+}elseif($SAFRA=='6'){
+    $pdf->Cell(5,0,utf8_decode('2021/2022'));
+}elseif($SAFRA=='7'){
+    $pdf->Cell(5,0,utf8_decode('2022/2023'));
+}elseif($SAFRA=='8'){
+    $pdf->Cell(5,0,utf8_decode('2023/2024'));
+}elseif($SAFRA=='9'){
+    $pdf->Cell(5,0,utf8_decode('2024/2025'));
+}elseif($SAFRA=='10'){
+    $pdf->Cell(5,0,utf8_decode('2025/2026'));
+}elseif($SAFRA=='11'){
+    $pdf->Cell(5,0,utf8_decode('2026/2027'));
+}elseif($SAFRA=='14'){
+    $pdf->Cell(5,0,utf8_decode('2027/2028'));
+}elseif($SAFRA=='15'){
+    $pdf->Cell(5,0,utf8_decode('2028/2029'));
+}elseif($SAFRA=='16'){
+    $pdf->Cell(5,0,utf8_decode('2029/2030'));
+}
+$pdf->Ln();
+
+
+//set width for each column
+$pdf->SetWidths(Array(18,60,13,18,15,15,15.5,10,15,16));
+$pdf->SetAligns(Array('C','','C','C','C','C','C','C','R','R'));
+
+//set line heigth
+$pdf->SetLineHeight(4);
+//DataBase Mysql
+require_once 'requires/80000.php';
+require_once 'requires/80001.php';
+require_once 'requires/80002.php';
+require_once 'requires/80003.php';
+require_once 'requires/80004.php';
+require_once 'requires/80005.php';
+require_once 'requires/80007.php';
+require_once 'requires/80008.php';
+require_once 'requires/80009.php';
+require_once 'requires/80010.php';
+require_once 'requires/80011.php';
+require_once 'requires/80012.php';
+require_once 'requires/80013.php';
+require_once 'requires/80014.php';
+require_once 'requires/80015.php';
+require_once 'requires/80016.php';
+require_once 'requires/80017.php';
+require_once 'requires/80018.php';
+require_once 'requires/80019.php';
+require_once 'requires/80020.php';
+require_once 'requires/80021.php';
+require_once 'requires/80022.php';
+require_once 'requires/80023.php';
+require_once 'requires/80024.php';
+require_once 'requires/80006.php';
+require_once 'requires/80025.php';
+require_once 'requires/80026.php';
+require_once 'requires/80027.php';
+require_once 'requires/80028.php';
+require_once 'requires/80161.php';
+require_once 'requires/80029.php';
+require_once 'requires/80030.php';
+require_once 'requires/80031.php';
+require_once 'requires/80032.php';
+require_once 'requires/80033.php';
+require_once 'requires/80034.php';
+require_once 'requires/80035.php';
+require_once 'requires/80036.php';
+require_once 'requires/80037.php';
+require_once 'requires/80038.php';
+require_once 'requires/80039.php';
+require_once 'requires/80040.php';
+require_once 'requires/80041.php';
+require_once 'requires/80042.php';
+require_once 'requires/80043.php';
+require_once 'requires/80044.php';
+require_once 'requires/80045.php';
+require_once 'requires/80046.php';
+require_once 'requires/80047.php';
+require_once 'requires/80048.php';
+require_once 'requires/80049.php';
+require_once 'requires/80050.php';
+require_once 'requires/80051.php';
+require_once 'requires/80052.php';
+require_once 'requires/80053.php';
+require_once 'requires/80054.php';
+require_once 'requires/80055.php';
+require_once 'requires/80056.php';
+require_once 'requires/80057.php';
+require_once 'requires/80058.php';
+require_once 'requires/80059.php';
+require_once 'requires/80060.php';
+require_once 'requires/80061.php';
+require_once 'requires/80062.php';
+require_once 'requires/80063.php';
+require_once 'requires/80064.php';
+require_once 'requires/80065.php';
+require_once 'requires/80066.php';
+require_once 'requires/80067.php';
+require_once 'requires/80068.php';
+require_once 'requires/80069.php';
+require_once 'requires/80070.php';
+require_once 'requires/80071.php';
+require_once 'requires/80072.php';
+require_once 'requires/80073.php';
+require_once 'requires/80074.php';
+require_once 'requires/80075.php';
+require_once 'requires/80076.php';
+require_once 'requires/80077.php';
+require_once 'requires/80078.php';
+require_once 'requires/80079.php';
+require_once 'requires/80080.php';
+require_once 'requires/80081.php';
+require_once 'requires/80082.php';
+require_once 'requires/80083.php';
+require_once 'requires/80084.php';
+require_once 'requires/80085.php';
+require_once 'requires/80086.php';
+require_once 'requires/80087.php';
+require_once 'requires/80088.php';
+require_once 'requires/80089.php';
+require_once 'requires/80091.php';
+require_once 'requires/80092.php';
+require_once 'requires/80093.php';
+require_once 'requires/80094.php';
+require_once 'requires/80095.php';
+require_once 'requires/80096.php';
+require_once 'requires/80097.php';
+require_once 'requires/80098.php';
+require_once 'requires/80099.php';
+require_once 'requires/80100.php';
+require_once 'requires/80101.php';
+require_once 'requires/80102.php';
+require_once 'requires/80103.php';
+require_once 'requires/80104.php';
+require_once 'requires/80105.php';
+require_once 'requires/80106.php';
+require_once 'requires/80107.php';
+require_once 'requires/80108.php';
+require_once 'requires/80109.php';
+require_once 'requires/80110.php';
+require_once 'requires/80111.php';
+require_once 'requires/80112.php';
+require_once 'requires/80113.php';
+require_once 'requires/80114.php';
+require_once 'requires/80115.php';
+require_once 'requires/80116.php';
+require_once 'requires/80117.php';
+require_once 'requires/80118.php';
+require_once 'requires/80119.php';
+require_once 'requires/80120.php';
+require_once 'requires/80121.php';
+require_once 'requires/80122.php';
+require_once 'requires/80123.php';
+require_once 'requires/80090.php';
+require_once 'requires/80124.php';
+require_once 'requires/80125.php';
+require_once 'requires/80126.php';
+require_once 'requires/80127.php';
+require_once 'requires/80128.php';
+require_once 'requires/80129.php';
+require_once 'requires/80130.php';
+require_once 'requires/80131.php';
+require_once 'requires/80132.php';
+require_once 'requires/80133.php';
+require_once 'requires/80134.php';
+require_once 'requires/80135.php';
+require_once 'requires/80136.php';
+require_once 'requires/80137.php';
+require_once 'requires/80138.php';
+require_once 'requires/80139.php';
+require_once 'requires/80140.php';
+require_once 'requires/80141.php';
+require_once 'requires/80142.php';
+require_once 'requires/80143.php';
+require_once 'requires/80144.php';
+require_once 'requires/80145.php';
+require_once 'requires/80146.php';
+require_once 'requires/80147.php';
+require_once 'requires/80148.php';
+require_once 'requires/80149.php';
+require_once 'requires/80150.php';
+require_once 'requires/80151.php';
+require_once 'requires/80152.php';
+require_once 'requires/80153.php';
+require_once 'requires/80154.php';
+require_once 'requires/80155.php';
+require_once 'requires/80156.php';
+require_once 'requires/80157.php';
+require_once 'requires/80158.php';
+require_once 'requires/80159.php';
+require_once 'requires/80160.php';
+require_once 'requires/80162.php';
+require_once 'requires/80163.php';
+require_once 'requires/80164.php';
+require_once 'requires/80165.php';
+require_once 'requires/80166.php';
+require_once 'requires/80167.php';
+require_once 'requires/80168.php';
+require_once 'requires/80169.php';
+require_once 'requires/80170.php';
+require_once 'requires/80171.php';
+require_once 'requires/80172.php';
+require_once 'requires/80173.php';
+require_once 'requires/80174.php';
+require_once 'requires/80175.php';
+require_once 'requires/80176.php';
+require_once 'requires/80177.php';
+require_once 'requires/80178.php';
+require_once 'requires/80179.php';
+require_once 'requires/80180.php';
+require_once 'requires/80181.php';
+require_once 'requires/80182.php';
+require_once 'requires/80183.php';
+require_once 'requires/80184.php';
+require_once 'requires/80185.php';
+require_once 'requires/80186.php';
+require_once 'requires/80187.php';
+require_once 'requires/80188.php';
+require_once 'requires/80189.php';
+require_once 'requires/80190.php';
+require_once 'requires/80191.php';
+require_once 'requires/80192.php';
+require_once 'requires/80193.php';
+require_once 'requires/80194.php';
+require_once 'requires/80195.php';
+require_once 'requires/80196.php';
+require_once 'requires/80197.php';
+require_once 'requires/80198.php';
+require_once 'requires/80199.php';
+require_once 'requires/80200.php';
+require_once 'requires/80201.php';
+require_once 'requires/80202.php';
+require_once 'requires/80203.php';
+require_once 'requires/80204.php';
+require_once 'requires/80205.php';
+require_once 'requires/80206.php';
+require_once 'requires/80207.php';
+require_once 'requires/80208.php';
+require_once 'requires/80209.php';
+require_once 'requires/80210.php';
+require_once 'requires/80211.php';
+require_once 'requires/80212.php';
+require_once 'requires/80213.php';
+require_once 'requires/80214.php';
+require_once 'requires/80215.php';
+require_once 'requires/80216.php';
+require_once 'requires/80217.php';
+require_once 'requires/80218.php';
+require_once 'requires/80219.php';
+require_once 'requires/80220.php';
+require_once 'requires/80221.php';
+require_once 'requires/80222.php';
+require_once 'requires/80223.php';
+require_once 'requires/80224.php';
+require_once 'requires/80225.php';
+require_once 'requires/80226.php';
+require_once 'requires/80227.php';
+require_once 'requires/80228.php';
+require_once 'requires/80229.php';
+require_once 'requires/80230.php';
+require_once 'requires/80231.php';
+require_once 'requires/80232.php';
+require_once 'requires/80233.php';
+require_once 'requires/80234.php';
+require_once 'requires/80235.php';
+require_once 'requires/80236.php';
+require_once 'requires/80237.php';
+require_once 'requires/80238.php';
+require_once 'requires/80239.php';
+require_once 'requires/80240.php';
+require_once 'requires/80241.php';
+require_once 'requires/80242.php';
+require_once 'requires/80243.php';
+require_once 'requires/80244.php';
+require_once 'requires/80245.php';
+require_once 'requires/80246.php';
+require_once 'requires/80247.php';
+require_once 'requires/80248.php';
+require_once 'requires/80249.php';
+require_once 'requires/80250.php';
+require_once 'requires/80251.php';
+require_once 'requires/80252.php';
+require_once 'requires/80253.php';
+require_once 'requires/80254.php';
+require_once 'requires/80255.php';
+require_once 'requires/80256.php';
+require_once 'requires/80257.php';
+require_once 'requires/80258.php';
+require_once 'requires/80259.php';
+require_once 'requires/80260.php';
+require_once 'requires/80261.php';
+require_once 'requires/80262.php';
+require_once 'requires/80263.php';
+require_once 'requires/80264.php';
+require_once 'requires/80265.php';
+require_once 'requires/80266.php';
+require_once 'requires/80267.php';
+require_once 'requires/80268.php';
+require_once 'requires/80269.php';
+require_once 'requires/80270.php';
+require_once 'requires/80271.php';
+require_once 'requires/80272.php';
+require_once 'requires/80273.php';
+require_once 'requires/80274.php';
+require_once 'requires/80275.php';
+require_once 'requires/80276.php';
+require_once 'requires/80277.php';
+require_once 'requires/80278.php';
+require_once 'requires/80279.php';
+require_once 'requires/80280.php';
+require_once 'requires/80281.php';
+require_once 'requires/80282.php';
+require_once 'requires/80283.php';
+require_once 'requires/80284.php';
+require_once 'requires/80285.php';
+require_once 'requires/80286.php';
+require_once 'requires/80287.php';
+require_once 'requires/80288.php';
+require_once 'requires/80289.php';
+require_once 'requires/80290.php';
+require_once 'requires/80291.php';
+require_once 'requires/80292.php';
+require_once 'requires/80293.php';
+require_once 'requires/80294.php';
+require_once 'requires/80295.php';
+require_once 'requires/80296.php';
+require_once 'requires/80297.php';
+require_once 'requires/80298.php';
+require_once 'requires/80299.php';
+require_once 'requires/80300.php';
+require_once 'requires/80301.php';
+require_once 'requires/80302.php';
+require_once 'requires/80303.php';
+require_once 'requires/80304.php';
+require_once 'requires/80305.php';
+require_once 'requires/80306.php';
+require_once 'requires/80312.php';
+require_once 'requires/80307.php';
+require_once 'requires/80308.php';
+require_once 'requires/80309.php';
+require_once 'requires/80310.php';
+require_once 'requires/80311.php';
+require_once 'requires/80313.php';
+require_once 'requires/80314.php';
+require_once 'requires/80315.php';
+require_once 'requires/80316.php';
+require_once 'requires/80317.php';
+require_once 'requires/80318.php';
+require_once 'requires/80319.php';
+require_once 'requires/80320.php';
+require_once 'requires/80321.php';
+require_once 'requires/80322.php';
+require_once 'requires/80323.php';
+require_once 'requires/80324.php';
+require_once 'requires/80325.php';
+require_once 'requires/80326.php';
+require_once 'requires/80327.php';
+require_once 'requires/80328.php';
+require_once 'requires/80329.php';
+require_once 'requires/80330.php';
+require_once 'requires/80331.php';
+require_once 'requires/80332.php';
+require_once 'requires/80333.php';
+require_once 'requires/80334.php';
+require_once 'requires/80335.php';
+require_once 'requires/80336.php';
+require_once 'requires/80337.php';
+require_once 'requires/80338.php';
+require_once 'requires/80339.php';
+require_once 'requires/80340.php';
+require_once 'requires/80341.php';
+require_once 'requires/80342.php';
+require_once 'requires/80343.php';
+require_once 'requires/80344.php';
+require_once 'requires/80345.php';
+require_once 'requires/80346.php';
+require_once 'requires/80347.php';
+require_once 'requires/80348.php';
+require_once 'requires/80349.php';
+require_once 'requires/80350.php';
+require_once 'requires/80351.php';
+require_once 'requires/80352.php';
+require_once 'requires/80353.php';
+require_once 'requires/80354.php';
+require_once 'requires/80355.php';
+require_once 'requires/80356.php';
+require_once 'requires/80357.php';
+require_once 'requires/80358.php';
+require_once 'requires/80359.php';
+require_once 'requires/80360.php';
+require_once 'requires/80361.php';
+require_once 'requires/80362.php';
+require_once 'requires/80363.php';
+require_once 'requires/80364.php';
+require_once 'requires/80365.php';
+require_once 'requires/80366.php';
+require_once 'requires/80367.php';
+require_once 'requires/80368.php';
+require_once 'requires/80369.php';
+require_once 'requires/80370.php';
+require_once 'requires/80371.php';
+require_once 'requires/80372.php';
+require_once 'requires/80373.php';
+require_once 'requires/80374.php';
+require_once 'requires/80375.php';
+require_once 'requires/80376.php';
+require_once 'requires/80377.php';
+require_once 'requires/80378.php';
+require_once 'requires/80379.php';
+require_once 'requires/80380.php';
+require_once 'requires/80381.php';
+require_once 'requires/80382.php';
+require_once 'requires/80383.php';
+require_once 'requires/80384.php';
+require_once 'requires/80385.php';
+require_once 'requires/80386.php';
+require_once 'requires/80387.php';
+require_once 'requires/80388.php';
+require_once 'requires/80389.php';
+require_once 'requires/80390.php';
+require_once 'requires/80391.php';
+require_once 'requires/80392.php';
+require_once 'requires/80393.php';
+require_once 'requires/80394.php';
+require_once 'requires/80395.php';
+require_once 'requires/80396.php';
+require_once 'requires/80397.php';
+require_once 'requires/80398.php';
+require_once 'requires/80399.php';
+require_once 'requires/80400.php';
+require_once 'requires/80401.php';
+require_once 'requires/80402.php';
+require_once 'requires/80403.php';
+require_once 'requires/80404.php';
+require_once 'requires/80405.php';
+require_once 'requires/80406.php';
+require_once 'requires/80407.php';
+require_once 'requires/80408.php';
+require_once 'requires/80409.php';
+require_once 'requires/80410.php';
+require_once 'requires/80411.php';
+require_once 'requires/80412.php';
+require_once 'requires/80413.php';
+require_once 'requires/80414.php';
+require_once 'requires/80415.php';
+require_once 'requires/80416.php';
+require_once 'requires/80417.php';
+require_once 'requires/80418.php';
+require_once 'requires/80419.php';
+require_once 'requires/80420.php';
+require_once 'requires/80421.php';
+require_once 'requires/80422.php';
+require_once 'requires/80423.php';
+require_once 'requires/80424.php';
+require_once 'requires/80425.php';
+require_once 'requires/80426.php';
+require_once 'requires/80427.php';
+require_once 'requires/80428.php';
+require_once 'requires/80429.php';
+require_once 'requires/80430.php';
+//Require responsavel pela totalização
+require_once 'requires/89999.php';
+
+
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+
+$pdf->SetY(-70);
+$pdf->SetX(165);
+$pdf->Cell(40,4,utf8_decode('Total em Litros S10:'),1,2,'C');
+$pdf->Cell(40,4,number_format($DIESELLITROS, 2, ',', '.'),1,2,'R');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(40,4,utf8_decode('Total em Valor:'),1,2,'C');
+$pdf->Cell(40,4,'R$: '.number_format($DIESELVALOR, 2, ',', '.'),1,2,'R');
+$pdf->Ln();
+
+
+$pdf->SetY(-70);
+$pdf->SetX(86);
+$pdf->Cell(40,4,utf8_decode('Total em Litros:'),1,2,'C');
+$pdf->Cell(40,4,number_format($TOTALDIESEL, 2, ',', '.'),1,2,'R');
+$pdf->Cell(25,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(40,4,utf8_decode('Total em Valor:'),1,2,'C');
+$pdf->Cell(40,4,'R$: '.number_format($TOTALVALOR, 2, ',', '.'),1,2,'R');
+$pdf->Ln();
+
+
+$pdf->SetY(-70);
+$pdf->SetX(10);
+$pdf->Cell(40,4,utf8_decode('Total em Litros Gasolina:'),1,2,'C');
+$pdf->Cell(40,4,number_format($GASOLINALITROS, 2, ',', '.'),1,2,'R');
+$pdf->Cell(40,4,utf8_decode(' '),0,2,'C');
+$pdf->Cell(40,4,utf8_decode('Total em Valor:'),1,2,'C');
+$pdf->Cell(40,4,'R$: '.number_format($GASOLINAVALOR, 2, ',', '.'),1,2,'R');
+$pdf->Ln();
+
+$pdf->SetY(271);
+$pdf->SetX(75);
+$pdf->SetFont('Arial','',8);
+$pdf->Cell(65,0.1,utf8_decode(''),1,2,'C',true);
+$pdf->Ln();
+$pdf->SetY(271);
+$pdf->SetX(75);
+$pdf->SetFont('Arial','',8);
+$pdf->Cell(65,4,utf8_decode('Assinatura do Responsável'),0,1,'C',false);
+$pdf->Ln();
+//output the pdf
+$pdf->OutPut();
+?>

@@ -1,0 +1,53 @@
+<?php
+/**************************************CARREGAMENTO DIAS*****************************************************/
+$QUERYDIA = mysqli_query($CONNECTIONINCLUDE, "SELECT COUNT(TIPO_EMB) AS CONTAGEM FROM `tb_saida_semana` WHERE DATA_EMISS='$TO_BORN' AND TIPO_EMB!=''");
+$ROWADIA = mysqli_num_rows($QUERYDIA);
+if ($ROWADIA > 0){
+	while($SQLINE = mysqli_fetch_array($QUERYDIA)){
+                $SEGUNDACARREGAMENTO = $SQLINE['CONTAGEM'];
+	}
+}
+$QUERYDIA = mysqli_query($CONNECTIONINCLUDE, "SELECT COUNT(TIPO_EMB) AS CONTAGEM FROM `tb_saida_semana` WHERE DATA_EMISS=DATE_ADD('$TO_BORN' , INTERVAL 1 DAY) AND TIPO_EMB!=''");
+$ROWADIA = mysqli_num_rows($QUERYDIA);
+if ($ROWADIA > 0){
+	while($SQLINE = mysqli_fetch_array($QUERYDIA)){
+                $TERÇACARREGAMENTO = $SQLINE['CONTAGEM'];
+	}
+}
+$QUERYDIA = mysqli_query($CONNECTIONINCLUDE, "SELECT COUNT(TIPO_EMB) AS CONTAGEM FROM `tb_saida_semana` WHERE DATA_EMISS=DATE_ADD('$TO_BORN' , INTERVAL 2 DAY) AND TIPO_EMB!=''");
+$ROWADIA = mysqli_num_rows($QUERYDIA);
+if ($ROWADIA > 0){
+	while($SQLINE = mysqli_fetch_array($QUERYDIA)){
+                $QUARTACARREGAMENTO = $SQLINE['CONTAGEM'];
+	}
+}
+$QUERYDIA = mysqli_query($CONNECTIONINCLUDE, "SELECT COUNT(TIPO_EMB) AS CONTAGEM FROM `tb_saida_semana` WHERE DATA_EMISS=DATE_ADD('$TO_BORN' , INTERVAL 3 DAY) AND TIPO_EMB!=''");
+$ROWADIA = mysqli_num_rows($QUERYDIA);
+if ($ROWADIA > 0){
+	while($SQLINE = mysqli_fetch_array($QUERYDIA)){
+                $QUINTACARREGAMENTO = $SQLINE['CONTAGEM'];
+	}
+}
+$QUERYDIA = mysqli_query($CONNECTIONINCLUDE, "SELECT COUNT(TIPO_EMB) AS CONTAGEM FROM `tb_saida_semana` WHERE DATA_EMISS=DATE_ADD('$TO_BORN' , INTERVAL 4 DAY) AND TIPO_EMB!=''");
+$ROWADIA = mysqli_num_rows($QUERYDIA);
+if ($ROWADIA > 0){
+	while($SQLINE = mysqli_fetch_array($QUERYDIA)){
+                $SEXTACARREGAMENTO = $SQLINE['CONTAGEM'];
+	}
+}
+$QUERYDIA = mysqli_query($CONNECTIONINCLUDE, "SELECT COUNT(TIPO_EMB) AS CONTAGEM FROM `tb_saida_semana` WHERE DATA_EMISS=DATE_ADD('$TO_BORN' , INTERVAL 5 DAY) AND TIPO_EMB!=''");
+$ROWADIA = mysqli_num_rows($QUERYDIA);
+if ($ROWADIA > 0){
+	while($SQLINE = mysqli_fetch_array($QUERYDIA)){
+                $SABADOCARREGAMENTO = $SQLINE['CONTAGEM'];
+	}
+}
+$QUERYDIA = mysqli_query($CONNECTIONINCLUDE, "SELECT COUNT(TIPO_EMB) AS CONTAGEM FROM `tb_saida_semana` WHERE DATA_EMISS=DATE_ADD('$TO_BORN' , INTERVAL 6 DAY) AND TIPO_EMB!=''");
+$ROWADIA = mysqli_num_rows($QUERYDIA);
+if ($ROWADIA > 0){
+	while($SQLINE = mysqli_fetch_array($QUERYDIA)){
+                $DOMINGOCARREGAMENTO = $SQLINE['CONTAGEM'];
+	}
+}
+$CARREGAMENTODIASSOMA = $SEGUNDACARREGAMENTO + $TERÇACARREGAMENTO + $QUARTACARREGAMENTO + $QUINTACARREGAMENTO + $SEXTACARREGAMENTO + $SABADOCARREGAMENTO + $DOMINGOCARREGAMENTO;
+?>

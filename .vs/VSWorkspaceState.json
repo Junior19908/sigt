@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\template",
+    "\\template\\dashboard",
+    "\\template\\dashboard\\pages",
+    "\\template\\dashboard\\pages\\almoxarifado",
+    "\\template\\dashboard\\pages\\almoxarifado\\relatorios",
+    "\\template\\dashboard\\pages\\almoxarifado\\relatorios\\requires"
+  ],
+  "SelectedNode": "\\template\\dashboard\\pages\\almoxarifado\\relatorios\\requires\\40006.php",
+  "PreviewInSolutionExplorer": false
+}

@@ -1,0 +1,9 @@
+﻿<?php
+include_once("include/head.php");
+include_once("include/header.php");
+if(isset($logado)){
+include_once("controller/level.php");
+}else{
+include_once("login/index.php");
+}
+?>

@@ -1,0 +1,377 @@
+<?php
+/***********************Inclusões*********************************/
+define('ROOT_PATH', dirname(__FILE__));
+require_once('../../../../../../controller/fpdf/fpdf.php');
+require_once('../../../../../../class/Conexao.class.php');
+/*****************************************************************/
+setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+date_default_timezone_set('America/Sao_Paulo');
+$DATAHJ = strftime('%d de %B de %Y', strtotime('today'));
+include_once('ligacoes/acesso.php');
+define('FPDF_FONTPATH', 'font/');
+class PDF extends FPDF
+{
+    function Header()
+    {	
+    	$this->SetX(135);
+    	$this->Cell(60, 30, utf8_decode(''), 1, 2, 'C');
+        $this->Image('../../../../../../css/logo/usga.png', 137, 18, 17); //Logo Mover para esquerda ou direita, Cima e Baixo & Tamanho.
+        $this->Image('../../../../../../css/logo/DNV-GL-Certification-logo.png', 157.8, 18, 15); //Logo Mover para esquerda ou direita, Cima e Baixo & Tamanho.
+        $this->Image('../../../../../../css/logo/Logomarca_Bonsucro_2016.png', 173, 18, 19); //Logo Mover para esquerda ou direita, Cima e Baixo & Tamanho.
+        $this->SetXY(135, 35);
+        $this->SetFont('Arial', 'B', 10);
+        $this->Cell(60, 5, utf8_decode('USINA SERRA GRANDE S/A'), 0, 0, 'C');
+        $this->Ln(6);
+        $this->SetXY(10, 10);
+        $this->SetFont('Arial', 'B', 15); //Definir Fonte e Tamanho
+        $this->Cell(125, 25, utf8_decode('SISTEMA DE GESTÃO SERRA GRANDE'), 1, 2, 'C');
+        $this->Cell(125, -10, utf8_decode('SGSG'), 0, 2, 'C');
+        $this->Ln(-4); //Quebra de Página
+        //***********************************************************//
+        $this->SetXY(10, 35);
+        $this->SetFont('Arial', 'B', 10);
+        $this->Cell(20, 5, utf8_decode('Página 1/1'), 1, 2, 'C');
+        $this->Ln(6);
+        //***********************************************************//
+        $this->SetXY(30, 35);
+        $this->SetFont('Arial', 'B', 10);
+        $this->Cell(105, 5, utf8_decode('CHECK-LIST DE INSPEÇÃO DE VEÍCULOS'), 1, 2, 'C');
+        $this->Ln(12);
+        //***********************************************************//
+        $this->SetXY(10, 40);
+    	$this->Cell(20, 8, utf8_decode(''), 1, 2, 'C');
+        $this->SetXY(10, 40);
+        $this->SetFont('Arial', 'B', 6);
+        $this->Cell(20, 5, utf8_decode('NÚMERO:'), 0, 2, 'C');
+        $this->Ln();
+        //***********************************************************//
+        $this->SetXY(10, 43);
+        $this->SetFont('Arial', 'B', 5);
+        $this->Cell(20, 5, utf8_decode('REG_PPR - SGSG0001'), 0, 2, 'C');
+        $this->Ln(12);
+        //***********************************************************//
+        $this->SetXY(30, 40);
+    	$this->Cell(23, 8, utf8_decode(''), 1, 2, 'C');
+        $this->SetXY(30, 40);
+        $this->SetFont('Arial', 'B', 6);
+        $this->Cell(23, 5, utf8_decode('DATA DE REVISÃO:'), 0, 2, 'C');
+        $this->Ln();
+        //***********************************************************//
+        $this->SetXY(30, 43);
+        $this->SetFont('Arial', 'B', 6);
+        $this->Cell(23, 5, utf8_decode('17/03/2022'), 0, 2, 'C');
+        $this->Ln(12);
+        //***********************************************************//
+        $this->SetXY(53, 40);
+    	$this->Cell(25, 8, utf8_decode(''), 1, 2, 'C');
+        $this->SetXY(53, 40);
+        $this->SetFont('Arial', 'B', 6);
+        $this->Cell(25, 5, utf8_decode('NÚMERO DA REVISÃO:'), 0, 2, 'C');
+        $this->Ln();
+        //***********************************************************//
+        $this->SetXY(53, 43);
+        $this->SetFont('Arial', 'B', 6);
+        $this->Cell(25, 5, utf8_decode('10'), 0, 2, 'C');
+        $this->Ln(12);
+        //***********************************************************//
+        $this->SetXY(78, 40);
+    	$this->Cell(57, 8, utf8_decode(''), 1, 2, 'C');
+        $this->SetXY(78, 40);
+        $this->SetFont('Arial', 'B', 6);
+        $this->Cell(57, 5, utf8_decode('ÁREA EMITENTE:'), 0, 2, 'C');
+        $this->Ln();
+        //***********************************************************//
+        $this->SetXY(78, 43);
+        $this->SetFont('Arial', 'B', 6);
+        $this->Cell(57, 5, utf8_decode('INDUSTRIAL'), 0, 2, 'C');
+        $this->Ln(12);
+        //***********************************************************//
+        $this->SetXY(135, 40);
+    	$this->Cell(60, 8, utf8_decode(''), 1, 2, 'C');
+        $this->SetXY(135, 40);
+        $this->SetFont('Arial', 'B', 6);
+        $this->Cell(60, 5, utf8_decode('APROVADOR:'), 0, 2, 'C');
+        $this->Ln();
+        //***********************************************************//
+        $this->SetXY(135, 43);
+        $this->SetFont('Arial', 'B', 8);
+        $this->Cell(60, 5, utf8_decode('Diogo Gonzaga'), 0, 2, 'C');
+        $this->Ln(12);
+        //***********************************************************//
+    }
+    function Footer(){
+        $this->SetY(-15);
+        $this->SetFont('Arial','BI', 10);
+        $this->Cell(0,10,utf8_decode('NÃO COBRAMOS POR CARREGAMENTO'),0,0,'L');
+        $this->Cell(0,10,utf8_decode('NA = Não Aplicavel'),0,0,'R');
+        $this->Ln();
+        $this->SetY(-10);
+        $this->SetFont('Arial','', 6);
+        $this->Cell(0,10,utf8_decode('Documento controlado - Reprodução proibida sem autorização do SGSG'),0,0,'C');
+        $this->Ln();
+    }
+}
+
+$pdf = new PDF('P', 'mm', 'A4');
+$pdf->AliasNbPages();
+$pdf->AddPage();
+$pdf->SetXY(10, 53);
+$pdf->SetFont('Arial', '', 10);
+$pdf->Cell(18, 0, utf8_decode('CLIENTE:'), 0, 0, 'P');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(5, 0, utf8_decode($CLIENTE));
+$pdf->Ln();
+$pdf->SetXY(145, 53);
+$pdf->SetFont('Arial', '', 10);
+$pdf->Cell(18, 0, utf8_decode('QUANTIDADE:'), 0, 0, 'P');
+$pdf->Ln();
+$pdf->SetXY(170, 53);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(5, 0, utf8_decode($QUANT.' '.$TPSAC));
+$pdf->Ln();
+$pdf->SetXY(10, 58);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(70, 5, utf8_decode('PRODUTO: AÇÚCAR ESPECIAL EXTRA - CRISTAL'), 1, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(80, 58);
+$pdf->Cell(115, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(80, 58);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(35, 5, utf8_decode('DATA DE EMISSÃO:'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(116, 58);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(40, 5, utf8_decode(date("d/m/Y", strtotime($DATAAC))), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(150, 58);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(40, 5, utf8_decode('HORA:'), 0, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(165, 58);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(40, 5, utf8_decode($HORAAC), 0, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(10, 63);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(70, 5, utf8_decode('ARM/LOTE:'), 1, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(80, 63);
+$pdf->Cell(115, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(80, 63);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(35, 5, utf8_decode('TRANSPORTADORA:'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(116, 63);
+$pdf->SetFont('Arial', 'B', 8);
+if($NTRANSPORT == ''){
+    $pdf->Cell(80, 5, utf8_decode($MOTORISTA), 0, 2, 'L');
+}else{
+    $pdf->Cell(80, 5, utf8_decode($NTRANSPORT), 0, 2, 'L');
+}
+$pdf->Ln();
+$pdf->SetXY(10, 68);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(70, 5, utf8_decode('Nº DO LAUDO:'), 1, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(80, 68);
+$pdf->Cell(115, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(80, 68);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(38, 5, utf8_decode('PLACAS DO VEÍCULO:'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(116, 68);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(80, 5, utf8_decode($PLACA_1.' - ' .$PLACA_2. ' - ' .$PLACA_3.' - '.$PLACA_4), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(10, 73);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(185, 5, utf8_decode('TIPO DE VEÍCULO'), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(10, 78);
+$pdf->Cell(185, 10, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(10, 78);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(37, 5, utf8_decode('( ) TRUCK ABERTO'), 0, 2, 'L');
+$pdf->Cell(37, 5, utf8_decode('( ) VIP / F4.000'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(47, 78);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(37, 5, utf8_decode('( ) TRUCK FECHADO'), 0, 2, 'L');
+$pdf->Cell(37, 5, utf8_decode('( ) CONTAINER'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(84, 78);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(37, 5, utf8_decode('( ) CARRETA'), 0, 2, 'L');
+$pdf->Cell(37, 5, utf8_decode('( ) SIDER'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(121, 78);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(37, 5, utf8_decode('( ) PASSEIO/KOMBI'), 0, 2, 'L');
+$pdf->Cell(37, 5, utf8_decode('( ) GRANELEIRO'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(158, 78);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(37, 5, utf8_decode('( ) TOCO'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(10, 88);
+$pdf->SetFont('Arial', '', 10);
+$pdf->Cell(140, 5, utf8_decode('ÍTENS DE CONFORMIDADE'), 1, 2, 'C');
+$pdf->Cell(140, 5, utf8_decode('01 - A carroceria encontra-se limpa?'), 1, 2, 'L');
+$pdf->Cell(140, 5, utf8_decode('02 - Na carroceria possui buracos ou furos no assoalho ou laterais?'), 1, 2, 'L');
+$pdf->Cell(140, 5, utf8_decode('03 - Na carroceria possui grãos ou sujidades nas frestas?'), 1, 2, 'L');
+$pdf->Cell(140, 5, utf8_decode('04 - Na carroceria possui pregos ou parafusos salientes?'), 1, 2, 'L');
+$pdf->Cell(140, 5, utf8_decode('05 - Na carroceria possui odores fortes?'), 1, 2, 'L');
+$pdf->Cell(140, 5, utf8_decode('06 - O assoalho da carroceria encontra-se seco e limpo?'), 1, 2, 'L');
+$pdf->Cell(140, 5, utf8_decode('07 - O veículo possui lona para cobertura em bom estado?'), 1, 2, 'L');
+$pdf->Cell(140, 5, utf8_decode('08 - Existe pneus de reservas ou outro objeto solto na carroceria?'), 1, 2, 'L');
+$pdf->MultiCell(140, 5, utf8_decode('09 - Existe lona, e em bom estado, para forração do lastro da carroceria e envelopamento da carga?'), 1, 'L',false);
+$pdf->Cell(140, 5, utf8_decode('10 - Hora do inicio do carregamento:  _____:_____:_____'), 0, 2, 'L');
+$pdf->Cell(140, 5, utf8_decode('11 - Aprovado para carregamento?'), 1, 2, 'L');
+$pdf->SetXY(10, 143);
+$pdf->Cell(185, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(149.9, 88);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(15, 5, utf8_decode('SIM'), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 10, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 0, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(165, 88);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(15, 5, utf8_decode('NÃO'), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 10, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 0, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(180, 88);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(15, 5, utf8_decode('NA'), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 10, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 0, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(10, 154);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->MultiCell(185, 3, utf8_decode('OBS.: É proibido transportar na carroceria dos veículos, junto com nosso produto, ferros, tábuas, pneus, ou qualquer outro objeto que possa sujar ou rasgar a embalagem de nosso produto.'), 0,'L',false);
+$pdf->Ln();
+$pdf->SetXY(10, 160);
+$pdf->SetFont('Arial', '', 10);
+$pdf->MultiCell(140, 5, utf8_decode('PÓS-CARREGAMENTO'), 1,'C',false);
+$pdf->MultiCell(140, 5, utf8_decode('01 - A carga foi revestida com lona impermeável por fora das guardas da carroceria?'), 1,'L',false);
+$pdf->MultiCell(140, 5, utf8_decode('02 - A amarração foi bem feita para evitar danos na carga?'), 1,'L',false);
+$pdf->MultiCell(140, 5, utf8_decode('03 - A lona está bem esticada para evitar eventual acumulo de água?'), 1,'L',false);
+$pdf->MultiCell(140, 5, utf8_decode('04 - A carga esta devidamente lacrada e os lacres na quantidade correta?'), 1,'L',false);
+$pdf->MultiCell(140, 5, utf8_decode('05 - Hora final do carregamento _____:_____.'), 1,'L',false);
+$pdf->MultiCell(140, 5, utf8_decode('06 - Aprovado para saída?'), 1,'L',false);
+$pdf->MultiCell(185, 5, utf8_decode('07 - Nº Lacres da lona:'), 1,'L',false);
+$pdf->MultiCell(185, 5, utf8_decode(' '), 1,'L',false);
+$pdf->MultiCell(185, 5, utf8_decode('08 - Nº Lacres big bags:'), 1,'L',false);
+$pdf->MultiCell(185, 5, utf8_decode(' '), 1,'L',false);
+$pdf->MultiCell(185, 5, utf8_decode(' '), 1,'L',false);
+$pdf->MultiCell(185, 5, utf8_decode(' '), 1,'L',false);
+$pdf->MultiCell(185, 5, utf8_decode('09 - Nº Big bags:'), 1, 'L',false);
+$pdf->MultiCell(185, 5, utf8_decode(' '), 1,'L',false);
+$pdf->MultiCell(185, 5, utf8_decode(' '), 1,'L',false);
+$pdf->SetXY(10, 143);
+$pdf->Cell(185, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(149.9, 160);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(15, 5, utf8_decode('SIM'), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(165, 160);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(15, 5, utf8_decode('NÃO'), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(180, 160);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(15, 5, utf8_decode('NA'), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Cell(15, 5, utf8_decode(''), 1, 2, 'C');
+$pdf->Ln();
+$pdf->SetXY(10, 240);
+$pdf->SetFont('Arial', 'B', 6);
+$pdf->MultiCell(185, 3, utf8_decode('Sr. MOTORISTA, FAVOR DECLARAR TRANSPORTE ANTERIOR DE PRODUTOS QUÍMICOS OU QUALQUER PRODUTO QUE POSSA CAUSAR CONTAMINAÇÃO AO AÇÚCAR, COM A OMISSÃO DESTE FATO SERÁ RESPONSABILIZADO POR ESTA OCORRÊNCIA COM A CARGA. O MEU VEÍCULO FOI CARREGADO E ENLONADO CORRETAMENTE, AS EMBALAGENS NÃO ESTÃO RASGADAS E ENCONTRAM-SE LIMPAS, SECAS, SEM ODOR ESTRANHO, SEM EMPEDRAMENTO E AS QUANTIDADES ESTÃO DE ACORDO COM A ORDEM DE TRANSPORTE. RECEBI O LAUDO DE ANÁLISES.'), 0,'L',false);
+$pdf->Cell(15, 3, utf8_decode('DECLARO___________________________________________________________________________________________________________________________________________________'), 0,'L',false);
+$pdf->Ln();
+$pdf->SetXY(10, 260);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->MultiCell(185, 5, utf8_decode('DE ACORDO:________________________________________________'), 0,'L',false);
+$pdf->Ln();
+$pdf->SetXY(10, 263);
+$pdf->SetFont('Arial', 'B', 6);
+$pdf->MultiCell(185, 5, utf8_decode('                                                       (Assinatura do Motorista) (Nº RG do motorista)'), 0,'L',false);
+$pdf->Ln();
+
+$pdf->SetXY(120, 260);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(0, 5, utf8_decode('________________________________________________'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(120, 263);
+$pdf->SetFont('Arial', 'B', 6);
+$pdf->MultiCell(0, 5, utf8_decode('(Assinatura do Vigilante)'), 0,'C',false);
+$pdf->Ln();
+
+$pdf->SetXY(10, 273);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(0, 0, utf8_decode('________________________________________________'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(10, 276);
+$pdf->SetFont('Arial', 'B', 6);
+$pdf->MultiCell(0, 0, utf8_decode('                                      (Responsável pelo carregamento)'), 0,'L',false);
+$pdf->Ln();
+$pdf->SetXY(120, 273);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(0, 0, utf8_decode('________________________________________________'), 0, 2, 'L');
+$pdf->Ln();
+$pdf->SetXY(120, 276);
+$pdf->SetFont('Arial', 'B', 6);
+$pdf->MultiCell(0, 0, utf8_decode('(Inspetor)'), 0,'C',false);
+$pdf->Ln();
+$pdf->OutPut();
+?>
