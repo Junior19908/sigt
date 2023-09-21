@@ -22,7 +22,7 @@ $dbname = 'sistemagsgxml';
 
 $CONNECTIONINCLUDE = new mysqli($servername, $username, $password, $dbname);
 
-$QUERYDATA = mysqli_query($CONNECTIONINCLUDE, "SELECT * FROM `tb_dataverificacao` ORDER BY col_id ASC");
+$QUERYDATA = mysqli_query($CONNECTIONINCLUDE, "SELECT * FROM `tb_dataverificacao` ORDER BY `tb_dataverificacao`.`col_id` ASC");
 $ROWDATA = mysqli_num_rows($QUERYDATA);
 if ($ROWDATA > 0){
 	while($sqline = mysqli_fetch_array($QUERYDATA)){
@@ -190,7 +190,7 @@ $pdf->Ln();
 $pdf->SetFont('Arial','',8);
 $pdf->Cell(18,0,utf8_decode('DATA:'),0,0,'L');
 
-$pdf->Cell(5,0,date("d/m/Y h:i:sa",strtotime(date($DATAVERIFICACAO))));
+$pdf->Cell(5,0,date("d/m/Y H:i:sa",strtotime(date($DATAVERIFICACAO))));
 $pdf->Ln();
 
 $pdf->SetY(43);
@@ -225,7 +225,7 @@ $pdf->Cell(20, 4, utf8_decode('STATUS'), 1, 2, 'C');
 //$pdf->SetFont('Arial', '', 8);
 //$pdf->SetFillColor(235, 64, 52); // Cor laranja para a célula de "Status"
 //$pdf->SetTextColor(255); // Cor do texto branca
-//$pdf->Cell(30, 4, utf8_decode('NÃO LANÇADA'), 1, 2, 'C',true);
+//$pdf->Cell(30, 4, utf8_decode('NÃO REGISTRADA'), 1, 2, 'C',true);
 $pdf->Ln();
 $pdf->SetFillColor(255); // Restaura a cor de fundo padrão (branca)
 $pdf->SetTextColor(0); // Restaura a cor do texto padrão (preta)
@@ -249,7 +249,7 @@ if ($CONNECTIONINCLUDE->connect_error) {
 }
 
 // Query usando Prepared Statement
-$QUERY_CHAVE = $CONNECTIONINCLUDE->prepare("SELECT * FROM `tb_chave` WHERE MONTH(`emisao`) = ? AND YEAR(emisao) = ? AND status NOT IN ('CANCELADA','LANÇADA') and tpNF !=0 ORDER BY `emisao` ASC");
+$QUERY_CHAVE = $CONNECTIONINCLUDE->prepare("SELECT * FROM `tb_chave` WHERE MONTH(`emisao`) = ? AND YEAR(emisao) = ? AND status NOT IN ('CANCELADA','REGISTRADA') and tpNF !=0 ORDER BY `emisao` ASC");
 
 // Define os parâmetros para a query
 
@@ -275,7 +275,9 @@ while ($row = $result->fetch_array()) {
     $pdf->Cell(15, 4, date('d/m/Y', strtotime($row['emisao'])), 1, 0, 'C');
     // Cria um link na célula com o valor da chave
     $pdf->Cell(65, 4, utf8_decode($row['col_chave']), 1, 0, 'C', false, $row['col_link']);
+    $pdf->SetFont('Arial','',6);
     $pdf->Cell(20, 4, utf8_decode($row['status']), 1, 0, 'C');
+    $pdf->SetFont('Arial','',7);
     $pdf->Cell(20, 4, $row['vNF'], 1, 0, 'R');
     //$pdf->Cell(20, 4, 'R$: '.number_format($row['vNF'], 2, ',', '.'), 1, 0, 'R');
     $pdf->Cell(50, 4, strtoupper(substr(utf8_decode($row['natOp']), 0, 30)), 1, 2, 'L');
@@ -285,7 +287,7 @@ while ($row = $result->fetch_array()) {
 $QUERY_CHAVE->close();
 
 // Query usando Prepared Statement
-$QUERY_CHAVE = $CONNECTIONINCLUDE->prepare("SELECT COUNT(DISTINCT col_chave) AS total_chaves, SUM(REPLACE(REPLACE(REPLACE(vNF, 'R$', ''), '.', ''), ',', '.')) AS total_valores FROM tb_chave WHERE MONTH(`emisao`) = ? AND YEAR(emisao) = ? AND status NOT IN ('CANCELADA','LANÇADA') and tpNF !=0");
+$QUERY_CHAVE = $CONNECTIONINCLUDE->prepare("SELECT COUNT(DISTINCT col_chave) AS total_chaves, SUM(REPLACE(REPLACE(REPLACE(vNF, 'R$', ''), '.', ''), ',', '.')) AS total_valores FROM tb_chave WHERE MONTH(`emisao`) = ? AND YEAR(emisao) = ? AND status NOT IN ('CANCELADA','REGISTRADA') and tpNF !=0");
 
 // Define os parâmetros para o Prepared Statement
 
@@ -350,7 +352,7 @@ INNER JOIN
 tb_historiconfe h ON c.ID = h.col_nfe
 WHERE
 MONTH(c.emisao) = ? AND YEAR(c.emisao) = ?
-AND c.status NOT IN ('CANCELADA', 'LANÇADA')
+AND c.status NOT IN ('CANCELADA', 'REGISTRADA')
 ORDER BY
 c.empresa ASC");
 
