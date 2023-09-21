@@ -13,8 +13,23 @@ $dateTime = new DateTime($datafim);
 $mes = $dateTime->format('m');
 $ano = $dateTime->format('Y');
 
-$inicio = '2023-05-01';
-$fim = '2023-05-31';
+// Configuração segura da conexão ao banco de dados
+$servername = 'localhost';
+$username = 'remoto';
+$password = 'XTKfAFKPHNhWpSqW';
+$dbname = 'sistemagsgxml';
+
+
+$CONNECTIONINCLUDE = new mysqli($servername, $username, $password, $dbname);
+
+$QUERYDATA = mysqli_query($CONNECTIONINCLUDE, "SELECT * FROM `tb_dataverificacao` ORDER BY col_id ASC");
+$ROWDATA = mysqli_num_rows($QUERYDATA);
+if ($ROWDATA > 0){
+	while($sqline = mysqli_fetch_array($QUERYDATA)){
+        $DATAVERIFICACAO = $sqline['col_dataUltVerif'];
+	}
+}
+
 
 $dataInicioAvaliacao = DateTime::createFromFormat('d/m/Y', '02/09/2023');
 $dataAtual = new DateTime();
@@ -159,7 +174,7 @@ class PDF extends FPDF
     // Calcula o número de dias restantes
     $lblperiodoAvaliacao = $duracaoAvaliacaolbl->days . " dias restantes";
 
-
+    date_default_timezone_set('America/Sao_Paulo');
 
 $pdf = new PDF('L','mm','A4');
 $pdf->AliasNbPages();
@@ -174,7 +189,8 @@ $pdf->Cell(5,6,utf8_decode($nome),0,0,'L');
 $pdf->Ln();
 $pdf->SetFont('Arial','',8);
 $pdf->Cell(18,0,utf8_decode('DATA:'),0,0,'L');
-$pdf->Cell(5,0,date("d/m/Y h:i:sa",strtotime(date("Y/m/d h:i:sa"))));
+
+$pdf->Cell(5,0,date("d/m/Y h:i:sa",strtotime(date($DATAVERIFICACAO))));
 $pdf->Ln();
 
 $pdf->SetY(43);
@@ -225,14 +241,7 @@ $pdf->Ln();
 //$pdf->SetWidths(array(15, 83, 25, 70, 30, 30, 19));
 //$pdf->SetAligns(array('C', 'L', 'C', 'C', 'C', 'C', 'R'));
 
-// Configuração segura da conexão ao banco de dados
-$servername = 'localhost';
-$username = 'remoto';
-$password = 'XTKfAFKPHNhWpSqW';
-$dbname = 'sistemagsgxml';
 
-
-$CONNECTIONINCLUDE = new mysqli($servername, $username, $password, $dbname);
 
 // Verifica a conexão
 if ($CONNECTIONINCLUDE->connect_error) {
@@ -240,7 +249,7 @@ if ($CONNECTIONINCLUDE->connect_error) {
 }
 
 // Query usando Prepared Statement
-$QUERY_CHAVE = $CONNECTIONINCLUDE->prepare("SELECT * FROM `tb_chave` WHERE MONTH(`emisao`) = ? AND YEAR(emisao) = ? AND status NOT IN ('CANCELADA','LANÇADA') ORDER BY `emisao` ASC");
+$QUERY_CHAVE = $CONNECTIONINCLUDE->prepare("SELECT * FROM `tb_chave` WHERE MONTH(`emisao`) = ? AND YEAR(emisao) = ? AND status NOT IN ('CANCELADA','LANÇADA') and tpNF !=0 ORDER BY `emisao` ASC");
 
 // Define os parâmetros para a query
 
@@ -276,7 +285,7 @@ while ($row = $result->fetch_array()) {
 $QUERY_CHAVE->close();
 
 // Query usando Prepared Statement
-$QUERY_CHAVE = $CONNECTIONINCLUDE->prepare("SELECT COUNT(DISTINCT col_chave) AS total_chaves, SUM(REPLACE(REPLACE(REPLACE(vNF, 'R$', ''), '.', ''), ',', '.')) AS total_valores FROM tb_chave WHERE MONTH(`emisao`) = ? AND YEAR(emisao) = ? AND status NOT IN ('CANCELADA','LANÇADA')");
+$QUERY_CHAVE = $CONNECTIONINCLUDE->prepare("SELECT COUNT(DISTINCT col_chave) AS total_chaves, SUM(REPLACE(REPLACE(REPLACE(vNF, 'R$', ''), '.', ''), ',', '.')) AS total_valores FROM tb_chave WHERE MONTH(`emisao`) = ? AND YEAR(emisao) = ? AND status NOT IN ('CANCELADA','LANÇADA') and tpNF !=0");
 
 // Define os parâmetros para o Prepared Statement
 
@@ -359,13 +368,13 @@ $result = $QUERY_CHAVE->get_result();
 
 
 // Verifica se a consulta retornou resultados
-$y_position = 150; // Posição vertical inicial
+$y_position = 180; // Posição vertical inicial
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $texto_multilinha = $row['col_historicoText'];
 
-        $largura_celula = 265;
+        $largura_celula = 270;
         $altura_celula = 4;
 
         $pdf->SetXY(11, $y_position); // Define a posição

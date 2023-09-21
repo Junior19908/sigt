@@ -3711,7 +3711,7 @@ class Danfe extends DaCommon
         $texto = "Impresso em " . date('d/m/Y') . " as " . date('H:i:s')
             . '  ' . $this->creditos;
         $this->pdf->textBox($x, $y, $w, 0, $texto, $aFont, 'T', 'L', false);
-        $texto = $this->powered ? "Powered by SIGT®" : '';
+        $texto = $this->powered ? "Desenvolvido por Carlos Júnior - SIGT®" : '';
         $this->pdf->textBox($x, $y, $w, 0, $texto, $aFont, 'T', 'R', false, '');
     }
 
